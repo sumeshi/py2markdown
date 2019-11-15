@@ -1,11 +1,12 @@
 import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Union, Optional
 
 from pprint import pprint
 
 class ParsedText(object):
     """
+    For convert source code to markdown.
     """
     previous_class = None
     def __init__(self, path):
@@ -29,14 +30,14 @@ class ParsedText(object):
         
         self.markdown = '\n'.join(result)
         
-    def write_file(self, output_path):
+    def write_file(self, output_path) -> None:
         file_path = output_path / self.path.with_suffix('').with_suffix('.md')
         print(f"write: {file_path}")
         if not file_path.parent.exists():
             file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_text(self.markdown)
     
-    def parse(self):
+    def parse(self) -> List[Union[PyClass, PyMethod, PyFunction]]:
         result = []
         comment_buffer = []
         is_into_comment = False
