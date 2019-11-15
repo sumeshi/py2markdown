@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ParsedText extends object</title>
+    <meta name="description" content="">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.99d7e448.css" as="style"><link rel="preload" href="/assets/js/app.008366d7.js" as="script"><link rel="preload" href="/assets/js/2.0be5d567.js" as="script"><link rel="preload" href="/assets/js/5.91a9f5a5.js" as="script"><link rel="prefetch" href="/assets/js/3.b0ed85fa.js"><link rel="prefetch" href="/assets/js/4.e8b1ed21.js"><link rel="prefetch" href="/assets/js/6.df4442b0.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.99d7e448.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-exact-active router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="parsedtext-extends-object"><a href="#parsedtext-extends-object" class="header-anchor">#</a> <strong>ParsedText</strong> <em>extends object</em></h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <p><br><br></p> <h2 id="parsedtext-init-self-path-any"><a href="#parsedtext-init-self-path-any" class="header-anchor">#</a> ParsedText.__init__(self, path) -&gt; Any</h2> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h3 id="code"><a href="#code" class="header-anchor">#</a> Code</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>def __init__(self, path):
+    self.path = path
+    self.text_list = self.path.read_text().splitlines()
+    
+    #result = ['[[toc]]']
+    result = ['']
+    for obj in self.parse():
+        if isinstance(obj, PyClass):
+            result.append(f&quot;# **{obj.name}** *extends {obj.super_class}*&quot;)
+            result.append(f&quot;::: tip Description  \n{obj.description if obj.description else 'None'}  \n:::\n&quot;)
+        if isinstance(obj, PyFunction):
+            depth = '' if type(obj) == PyFunction else '#'
+            class_name = getattr(obj, 'class_name', '')
+            result.append(f&quot;#{depth} {class_name + '.' if class_name else ''}{obj.name}({format_args(obj.args)}) -&gt; {obj.return_value}&quot;)
+            result.append(f&quot;::: tip Description  \n{obj.description if obj.description else 'None'}  \n:::\n&quot;)
+            result.append(f&quot;##{depth} Code\n```\n{obj.code}\n```\n&quot;)
+
+        result.append('&lt;br&gt;&lt;br&gt;\n')
+    
+    self.markdown = '\n'.join(result)
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br></div></div><p><br><br></p> <h2 id="parsedtext-write-file-self-output-path-any"><a href="#parsedtext-write-file-self-output-path-any" class="header-anchor">#</a> ParsedText.write_file(self, output_path) -&gt; Any</h2> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h3 id="code-2"><a href="#code-2" class="header-anchor">#</a> Code</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>def write_file(self, output_path):
+    file_path = output_path / self.path.with_suffix('').with_suffix('.md')
+    print(f&quot;write: {file_path}&quot;)
+    if not file_path.parent.exists():
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+    file_path.write_text(self.markdown)
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p><br><br></p> <h2 id="parsedtext-parse-self-any"><a href="#parsedtext-parse-self-any" class="header-anchor">#</a> ParsedText.parse(self) -&gt; Any</h2> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h3 id="code-3"><a href="#code-3" class="header-anchor">#</a> Code</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>def parse(self):
+    result = []
+    comment_buffer = []
+    is_into_comment = False
+
+    code_buffer = []
+    code_nest = 0
+
+    for line in self.text_list:
+        code_buffer.append(line)
+
+        nest = get_nest_level(line)
+        line = line.strip()
+
+        if 1&lt;len(result):
+            if nest &lt; code_nest and line is not '' or line.startswith('class ') and 3&lt;len(code_buffer) or line.startswith('def ') and 3&lt;len(code_buffer):
+                for num, p_line in enumerate(reversed(code_buffer[:-1])):
+                    if p_line.strip() is not '':
+                        break
+
+                result[-1].code = '\n'.join([c_line.replace('    ', '', code_nest) for c_line in code_buffer[:-(num + 1)]])
+        
+        # classify
+        if line.startswith('class '):
+            result.append(PyClass(line))
+
+            code_buffer = [code_buffer[-1]]
+            code_nest = nest
+
+        if line.startswith('def '):
+            if nest == 1:
+                result.append(PyMethod(line))
+            else:
+                result.append(PyFunction(line))
+
+            code_buffer = [code_buffer[-1]]
+            code_nest = nest
+
+        
+        # comment detection
+        if is_into_comment:
+            comment_buffer.append(line)
+
+        if '\&quot;\&quot;\&quot;' in line:
+            if not is_into_comment:
+                is_into_comment = True
+                comment_buffer.clear()
+                comment_buffer.append(line)
+            else:
+                is_into_comment = False
+                result[-1].description = '\n'.join([line.replace('&quot;&quot;&quot;', '').strip() for line in comment_buffer if line.replace('&quot;&quot;&quot;', '').strip()])
+                comment_buffer.clear()
+
+    result[-1].code = '\n'.join([c_line.replace('    ', '', code_nest) for c_line in code_buffer])
+    return result
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br></div></div><p><br><br></p> <h1 id="pyclass-extends-object"><a href="#pyclass-extends-object" class="header-anchor">#</a> <strong>PyClass</strong> <em>extends object</em></h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <p><br><br></p> <h2 id="pyclass-init-self-line-any"><a href="#pyclass-init-self-line-any" class="header-anchor">#</a> PyClass.__init__(self, line) -&gt; Any</h2> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h3 id="code-4"><a href="#code-4" class="header-anchor">#</a> Code</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>def __init__(self, line):
+    self.name = extract_name(line, 'class')
+    self.super_class = extract_inside_bracket(line)
+    self.description = ''
+    self.code = ''
+
+    ParsedText.previous_class = self.name
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p><br><br></p> <h1 id="pyfunction-extends-object"><a href="#pyfunction-extends-object" class="header-anchor">#</a> <strong>PyFunction</strong> <em>extends object</em></h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <p><br><br></p> <h2 id="pyfunction-init-self-line-any"><a href="#pyfunction-init-self-line-any" class="header-anchor">#</a> PyFunction.__init__(self, line) -&gt; Any</h2> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h3 id="code-5"><a href="#code-5" class="header-anchor">#</a> Code</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>def __init__(self, line):
+    self.name = extract_name(line, 'def')
+    self.args = parse_args(extract_inside_bracket(line))
+    self.return_value = get_return(line)
+    self.description = ''
+    self.code = ''
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p><br><br></p> <h1 id="pymethod-extends-pyfunction"><a href="#pymethod-extends-pyfunction" class="header-anchor">#</a> <strong>PyMethod</strong> <em>extends PyFunction</em></h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <p><br><br></p> <h2 id="pymethod-init-self-line-any"><a href="#pymethod-init-self-line-any" class="header-anchor">#</a> PyMethod.__init__(self, line) -&gt; Any</h2> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h3 id="code-6"><a href="#code-6" class="header-anchor">#</a> Code</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>def __init__(self, line):
+    super().__init__(line)
+    self.class_name = ParsedText.previous_class
+    self.return_value = get_return(line)
+    self.description = ''
+    self.code = ''
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><p><br><br></p> <h1 id="extract-name-line-str-prefix-str-str"><a href="#extract-name-line-str-prefix-str-str" class="header-anchor">#</a> extract_name(line: str, prefix: str) -&gt; str</h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h2 id="code-7"><a href="#code-7" class="header-anchor">#</a> Code</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>def extract_name(line: str, prefix: str) -&gt; str:
+    return line.replace(f&quot;{prefix} &quot;, '').split('(')[0].replace('_', '\_')
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p><br><br></p> <h1 id="extract-inside-bracket-line-str-str"><a href="#extract-inside-bracket-line-str-str" class="header-anchor">#</a> extract_inside_bracket(line: str) -&gt; str</h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h2 id="code-8"><a href="#code-8" class="header-anchor">#</a> Code</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>def extract_inside_bracket(line: str) -&gt; str:
+    return line.split('(')[1].split(')')[0] 
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p><br><br></p> <h1 id="parse-args-line-str-list-str"><a href="#parse-args-line-str-list-str" class="header-anchor">#</a> parse_args(line: str) -&gt; List[str]</h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h2 id="code-9"><a href="#code-9" class="header-anchor">#</a> Code</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>def parse_args(line: str) -&gt; List[str]:
+    args = [arg.strip() for arg in line.split(',')]
+    return args if args != [''] else ['None']
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p><br><br></p> <h1 id="get-nest-level-line-str-int"><a href="#get-nest-level-line-str-int" class="header-anchor">#</a> get_nest_level(line: str) -&gt; int</h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h2 id="code-10"><a href="#code-10" class="header-anchor">#</a> Code</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>def get_nest_level(line: str) -&gt; int:
+    return len(line.split('    ')) - 1
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p><br><br></p> <h1 id="get-return-line-str-str"><a href="#get-return-line-str-str" class="header-anchor">#</a> get_return(line: str) -&gt; str</h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h2 id="code-11"><a href="#code-11" class="header-anchor">#</a> Code</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>def get_return(line: str) -&gt; str:
+    return line.split('-&gt;')[-1].strip()[:-1] if '-&gt;' in line else 'Any'
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p><br><br></p> <h1 id="format-args-args-list-str-str"><a href="#format-args-args-list-str-str" class="header-anchor">#</a> format_args(args: List[str]) -&gt; str</h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h2 id="code-12"><a href="#code-12" class="header-anchor">#</a> Code</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>def format_args(args: List[str]) -&gt; str:
+    return ', '.join([arg for arg in args])
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p><br><br></p> <h1 id="main-none-any"><a href="#main-none-any" class="header-anchor">#</a> main(None) -&gt; Any</h1> <div class="custom-block tip"><p class="custom-block-title">Description</p> <p>None</p></div> <h2 id="code-13"><a href="#code-13" class="header-anchor">#</a> Code</h2> <div class="language- line-numbers-mode"><pre class="language-text"><code>def main():
+    dir_path = Path(sys.argv[1])
+    output_path = Path(sys.argv[2])
+    py_files = dir_path.glob('**/*.py')
+    for file in py_files:
+        p = ParsedText(path=file)
+        p.write_file(output_path)
+
+if __name__ == '__main__':
+    main()
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><p><br><br></p></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.008366d7.js" defer></script><script src="/assets/js/2.0be5d567.js" defer></script><script src="/assets/js/5.91a9f5a5.js" defer></script>
+  </body>
+</html>
