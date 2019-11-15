@@ -11,7 +11,7 @@ Note: This project is now development. May change frequently.
 $ python py2markdown.py <SOURCE_DIRECTORY> <DESTINATION_DIRECTORY>
 ```
 
-See [Qiita]() for more information.
+See [Qiita](https://qiita.com/sumeshi/items/8c9ed2f7f440bcae3ea8) for more information.
 
 ## Demo
 [Netlify](https://py2markdown.netlify.com/)
@@ -20,4 +20,4 @@ See [Qiita]() for more information.
 [S.Nakano](https://github.com/sumeshi)
 
 ## License
-py2markdown is released under the [MIT]() License.
+py2markdown is released under the [MIT](https://github.com/sumeshi/py2markdown/blob/master/LICENSE) License.
