@@ -4,6 +4,35 @@ from typing import List, Union, Optional
 
 from pprint import pprint
 
+
+class PyClass(object):
+    def __init__(self, line):
+        self.name = extract_name(line, 'class')
+        self.super_class = extract_inside_bracket(line)
+        self.description = ''
+        self.code = ''
+
+        ParsedText.previous_class = self.name
+
+
+class PyFunction(object):
+    def __init__(self, line):
+        self.name = extract_name(line, 'def')
+        self.args = parse_args(extract_inside_bracket(line))
+        self.return_value = get_return(line)
+        self.description = ''
+        self.code = ''
+    
+
+class PyMethod(PyFunction):
+    def __init__(self, line):
+        super().__init__(line)
+        self.class_name = ParsedText.previous_class
+        self.return_value = get_return(line)
+        self.description = ''
+        self.code = ''
+
+
 class ParsedText(object):
     """
     For convert source code to markdown.
@@ -93,33 +122,6 @@ class ParsedText(object):
         result[-1].code = '\n'.join([c_line.replace('    ', '', code_nest) for c_line in code_buffer])
         return result
 
-
-class PyClass(object):
-    def __init__(self, line):
-        self.name = extract_name(line, 'class')
-        self.super_class = extract_inside_bracket(line)
-        self.description = ''
-        self.code = ''
-
-        ParsedText.previous_class = self.name
-
-
-class PyFunction(object):
-    def __init__(self, line):
-        self.name = extract_name(line, 'def')
-        self.args = parse_args(extract_inside_bracket(line))
-        self.return_value = get_return(line)
-        self.description = ''
-        self.code = ''
-    
-
-class PyMethod(PyFunction):
-    def __init__(self, line):
-        super().__init__(line)
-        self.class_name = ParsedText.previous_class
-        self.return_value = get_return(line)
-        self.description = ''
-        self.code = ''
 
 def extract_name(line: str, prefix: str) -> str:
     return line.replace(f"{prefix} ", '').split('(')[0].replace('_', '\_')
