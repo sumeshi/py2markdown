@@ -1,0 +1,17 @@
+build_docs:
+  image: python:3.7-alpine
+  stage: build_docs
+  script: python docs/py2markdown/src/py2markdown.py src docs/py2markdown/build/
+  artifacts:
+    paths:
+      - documents/
+
+deploy_docs:
+  image: node:12-alpine
+  stage: deploy_docs
+  script:
+    - npm install
+    - npx vuepress build build/
+  artifacts:
+    paths:
+      - documents/

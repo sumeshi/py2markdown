@@ -2,8 +2,6 @@ import sys
 from pathlib import Path
 from typing import List, Union, Optional
 
-from pprint import pprint
-
 
 class PyClass(object):
     def __init__(self, line):
@@ -53,7 +51,7 @@ class ParsedText(object):
                 class_name = getattr(obj, 'class_name', '')
                 result.append(f"#{depth} {class_name + '.' if class_name else ''}{obj.name}({format_args(obj.args)}) -> {obj.return_value}")
                 result.append(f"::: tip Description  \n{obj.description if obj.description else 'None'}  \n:::\n")
-                result.append(f"##{depth} Code\n```\n{obj.code}\n```\n")
+                result.append(f"##{depth} Code\n```python\n{obj.code}\n```\n")
 
             result.append('<br><br>\n')
         
@@ -148,8 +146,11 @@ def main():
     output_path = Path(sys.argv[2])
     py_files = dir_path.glob('**/*.py')
     for file in py_files:
-        p = ParsedText(path=file)
-        p.write_file(output_path)
+        try:
+            p = ParsedText(path=file)
+            p.write_file(output_path)
+        except:
+            pass
 
 if __name__ == '__main__':
     main()
