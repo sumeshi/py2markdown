@@ -1,9 +1,10 @@
 module.exports = {
-    title: 'hit-core',
+    title: 'py2markdown documents',
     markdown: {
         toc: {
             includeLevel: [1, 2, 3]
         },
         lineNumbers: true
-    }
+    },
+    dest: 'public'
 }
